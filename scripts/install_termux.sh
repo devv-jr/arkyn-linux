@@ -2,25 +2,25 @@
 set -euo pipefail
 
 # ═══════════════════════════════════════════════════════════════════
-#  ARKYN INSTALLER - Termux Bootstrap Script
-#  Cyberpunk-style installation system
+#  INSTALADOR ARKYN - Script de Arranque para Termux
+#  Sistema de instalación estilo cyberpunk
 # ═══════════════════════════════════════════════════════════════════
 
-# Variables and Constants
+# Variables y Constantes
 
 export ARKYN_REPO_URL='https://github.com/devv-jr/arkyn-linux.git'
 
-# Colors - Retro terminal aesthetic
+# Colores - Estética terminal retro
 C_RESET="\033[0m"
-C_GREEN="\033[1;32m"      # Matrix green
-C_CYAN="\033[1;36m"       # Neon cyan
-C_YELLOW="\033[1;33m"     # Warning amber
-C_RED="\033[1;31m"        # Critical red
-C_MAGENTA="\033[1;35m"    # Cyberpunk pink
-C_DIM="\033[2;37m"        # Dimmed text
-C_BLINK="\033[5m"         # Blinking (not all terminals)
+C_GREEN="\033[1;32m"      # Verde Matrix
+C_CYAN="\033[1;36m"       # Cyan neón
+C_YELLOW="\033[1;33m"     # Ámbar advertencia
+C_RED="\033[1;31m"        # Rojo crítico
+C_MAGENTA="\033[1;35m"    # Rosa cyberpunk
+C_DIM="\033[2;37m"        # Texto atenuado
+C_BLINK="\033[5m"         # Parpadeante (no todas las terminales)
 
-# Symbols
+# Símbolos
 SYM_OK="✓"
 SYM_FAIL="✗"
 SYM_ARROW="→"
@@ -28,7 +28,7 @@ SYM_WARN="⚠"
 SYM_INFO="ℹ"
 
 # ═══════════════════════════════════════════════════════════════════
-#  ASCII Art Banner
+#  Banner ASCII Art
 # ═══════════════════════════════════════════════════════════════════
 print_banner() {
     clear
@@ -43,20 +43,20 @@ print_banner() {
     ║    ██║  ██║██║  ██║██║  ██╗   ██║   ██║ ╚████║║
     ║    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝║
     ║                                               ║
-    ║          Termux Penetration Framework         ║
-    ║              v0.1.0 - ALPHA BUILD             ║
+    ║       Framework de Penetración para Termux    ║
+    ║           v0.1.0 - VERSIÓN ALPHA              ║
     ╚═══════════════════════════════════════════════╝
 EOF
     echo -e "${C_RESET}"
-    echo -e "${C_DIM}    [*] Initializing installation sequence...${C_RESET}\n"
+    echo -e "${C_DIM}    [*] Iniciando secuencia de instalación...${C_RESET}\n"
     sleep 1
 }
 
 # ═══════════════════════════════════════════════════════════════════
-#  Helper Functions
+#  Funciones Auxiliares
 # ═══════════════════════════════════════════════════════════════════
 
-# Print status messages
+# Imprimir mensajes de estado
 log_info() {
     echo -e "${C_CYAN}[${SYM_INFO}]${C_RESET} $*"
 }
@@ -73,7 +73,7 @@ log_warn() {
     echo -e "${C_YELLOW}[${SYM_WARN}]${C_RESET} $*"
 }
 
-# Animated progress bar
+# Barra de progreso animada
 progress_bar() {
     local duration=$1
     local text=$2
@@ -89,7 +89,7 @@ progress_bar() {
     echo -e "] ${C_GREEN}${SYM_OK}${C_RESET}"
 }
 
-# Simulate loading effect
+# Simular efecto de carga
 loading() {
     local text=$1
     local delay=0.1
@@ -101,77 +101,100 @@ loading() {
     echo ""
 }
 
-# Check command exists
+# Verificar que comando existe
 require_cmd() {
     if ! command -v "$1" &> /dev/null; then
-        log_error "Required command not found: $1"
+        log_error "Comando requerido no encontrado: $1"
         exit 1
     fi
 }
 
 # ═══════════════════════════════════════════════════════════════════
-#  Installation Steps
+#  Pasos de Instalación
 # ═══════════════════════════════════════════════════════════════════
 
 step_system_check() {
-    log_info "Running system diagnostics..."
+    log_info "Ejecutando diagnósticos del sistema..."
     sleep 0.5
     
-    # Check if running in Termux
+    # Verificar si está en Termux
     if [[ ! -d "/data/data/com.termux" ]]; then
-        log_warn "Not running in Termux - some features may not work"
+        log_warn "No está ejecutándose en Termux - algunas funciones podrían no funcionar"
     fi
     
-    # Check pkg availability
+    # Verificar disponibilidad de pkg
     if ! command -v pkg &> /dev/null; then
-        log_error "pkg manager not found - are you in Termux?"
+        log_error "Gestor pkg no encontrado - ¿estás en Termux?"
         exit 1
     fi
     
-    log_success "System check passed"
+    log_success "Verificación del sistema completada"
 }
 
 step_install_deps() {
-    log_info "Installing core dependencies..."
+    log_info "Instalando dependencias principales..."
     echo ""
     
-    loading "  ${SYM_ARROW} Updating package repositories"
-    pkg update -y &> /dev/null || true
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Actualizando repositorios de paquetes${C_RESET}"
+    if pkg update -y > /tmp/arkyn_pkg.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+    else
+        echo -e " ${C_YELLOW}${SYM_WARN}${C_RESET}"
+    fi
     
-    loading "  ${SYM_ARROW} Installing Python 3"
-    pkg install python -y &> /dev/null
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando Python 3${C_RESET}"
+    if pkg install python -y > /tmp/arkyn_python.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+    else
+        echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
+        log_error "Instalación de Python falló. Revisa /tmp/arkyn_python.log"
+        exit 1
+    fi
     
-    loading "  ${SYM_ARROW} Installing Git"
-    pkg install git -y &> /dev/null
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando Git${C_RESET}"
+    if pkg install git -y > /tmp/arkyn_git.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+    else
+        echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
+        log_error "Instalación de Git falló. Revisa /tmp/arkyn_git.log"
+        exit 1
+    fi
     
-    loading "  ${SYM_ARROW} Upgrading pip"
-    python -m pip install --upgrade pip &> /dev/null
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Actualizando pip${C_RESET}"
+    if python -m pip install --upgrade pip > /tmp/arkyn_pip.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+    else
+        echo -e " ${C_YELLOW}${SYM_WARN}${C_RESET} (no crítico)"
+    fi
     
-    log_success "Dependencies installed"
+    log_success "Dependencias instaladas"
 }
 
 step_clone_repo() {
-    # Check for repo URL (should be set at script top)
+    # Verificar URL del repositorio (debe estar configurada al inicio)
     if [ -z "${ARKYN_REPO_URL-}" ]; then
-        log_error "ARKYN_REPO_URL not configured in script!"
+        log_error "¡ARKYN_REPO_URL no está configurada en el script!"
         echo -e "${C_YELLOW}"
-        echo "  Please edit the script and set ARKYN_REPO_URL variable"
+        echo "  Por favor edita el script y define la variable ARKYN_REPO_URL"
         echo -e "${C_RESET}"
         exit 1
     fi
     
-    log_info "Cloning ARKYN repository..."
-    echo -e "${C_DIM}  Source: ${ARKYN_REPO_URL}${C_RESET}"
+    log_info "Clonando repositorio ARKYN..."
+    echo -e "${C_DIM}  Origen: ${ARKYN_REPO_URL}${C_RESET}"
     
     TMP_DIR="$HOME/arkyn_tmp"
     rm -rf "$TMP_DIR"
     mkdir -p "$TMP_DIR"
     cd "$TMP_DIR"
     
-    if git clone "$ARKYN_REPO_URL" arkyn-src 2>&1 | grep -q "Cloning"; then
-        log_success "Repository cloned"
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Descargando repositorio${C_RESET}"
+    if git clone "$ARKYN_REPO_URL" arkyn-src > /tmp/arkyn_clone.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+        log_success "Repositorio clonado"
     else
-        log_error "Clone failed"
+        echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
+        log_error "Clonación falló. Revisa /tmp/arkyn_clone.log"
         exit 1
     fi
     
@@ -179,51 +202,52 @@ step_clone_repo() {
 }
 
 step_install_arkyn() {
-    log_info "Installing ARKYN framework..."
+    log_info "Instalando framework ARKYN..."
     echo ""
     
-    loading "  ${SYM_ARROW} Setting up CLI interface"
-    loading "  ${SYM_ARROW} Setting up TUI interface"
-    
-    if pip install -e .[cli,ui] &> /dev/null; then
-        log_success "ARKYN installed in editable mode"
+    echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando componentes CLI y TUI${C_RESET}"
+    if pip install -e .[cli,ui] > /tmp/arkyn_install.log 2>&1; then
+        echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
+        log_success "ARKYN instalado en modo editable"
     else
-        log_error "Installation failed"
+        echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
+        log_error "Instalación falló. Revisa /tmp/arkyn_install.log para más detalles"
+        cat /tmp/arkyn_install.log
         exit 1
     fi
 }
 
 step_create_dirs() {
-    log_info "Creating configuration directories..."
+    log_info "Creando directorios de configuración..."
     
     mkdir -p "$HOME/.arkyn/plugins"
     mkdir -p "$HOME/.arkyn/configs"
     mkdir -p "$HOME/.arkyn/logs"
     
-    log_success "Directory structure created"
+    log_success "Estructura de directorios creada"
 }
 
 step_verify() {
-    log_info "Verifying installation..."
+    log_info "Verificando instalación..."
     
     if command -v arkyn &> /dev/null; then
-        log_success "ARKYN command available"
+        log_success "Comando ARKYN disponible"
         return 0
     else
-        log_error "ARKYN command not found in PATH"
+        log_error "Comando ARKYN no encontrado en PATH"
         return 1
     fi
 }
 
 # ═══════════════════════════════════════════════════════════════════
-#  Main Installation Flow
+#  Flujo Principal de Instalación
 # ═══════════════════════════════════════════════════════════════════
 
 main() {
     print_banner
     
     echo -e "${C_MAGENTA}╔═════════════════════════════════════════════════╗${C_RESET}"
-    echo -e "${C_MAGENTA}║${C_RESET}  Installation Sequence Initiated               ${C_MAGENTA}║${C_RESET}"
+    echo -e "${C_MAGENTA}║${C_RESET}  Secuencia de Instalación Iniciada             ${C_MAGENTA}║${C_RESET}"
     echo -e "${C_MAGENTA}╚═════════════════════════════════════════════════╝${C_RESET}"
     echo ""
     
@@ -245,27 +269,27 @@ main() {
     step_verify
     echo ""
     
-    # Success banner
+    # Banner de éxito
     echo -e "${C_GREEN}"
     cat << "EOF"
     ╔═══════════════════════════════════════════════╗
     ║                                               ║
-    ║        INSTALLATION COMPLETE ✓                ║
+    ║        INSTALACIÓN COMPLETADA ✓               ║
     ║                                               ║
-    ║   ARKYN is now operational in your system.    ║
+    ║   ARKYN está operativo en tu sistema.         ║
     ║                                               ║
     ╚═══════════════════════════════════════════════╝
 EOF
     echo -e "${C_RESET}"
     
-    echo -e "${C_CYAN}Quick Start Commands:${C_RESET}"
-    echo -e "  ${C_GREEN}arkyn --help${C_RESET}     - Show all commands"
-    echo -e "  ${C_GREEN}arkyn info${C_RESET}       - System information"
-    echo -e "  ${C_GREEN}arkyn tui${C_RESET}        - Launch TUI interface"
-    echo -e "  ${C_GREEN}arkyn plugins list${C_RESET} - List available plugins"
+    echo -e "${C_CYAN}Comandos de Inicio Rápido:${C_RESET}"
+    echo -e "  ${C_GREEN}arkyn --help${C_RESET}       - Mostrar todos los comandos"
+    echo -e "  ${C_GREEN}arkyn info${C_RESET}         - Información del sistema"
+    echo -e "  ${C_GREEN}arkyn tui${C_RESET}          - Lanzar interfaz TUI"
+    echo -e "  ${C_GREEN}arkyn plugins list${C_RESET} - Listar plugins disponibles"
     echo ""
-    echo -e "${C_DIM}[*] System ready for deployment${C_RESET}"
+    echo -e "${C_DIM}[*] Sistema listo para despliegue${C_RESET}"
 }
 
-# Execute main installation
+# Ejecutar instalación principal
 main

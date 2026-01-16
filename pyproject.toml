@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "arkyn"
+version = "0.1.0"
+description = "ARKYN - toolkit and environment (Termux-first)"
+authors = [ { name = "Dev", email = "devvvjr@protonmail.com" } ]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+
+
+[project.optional-dependencies]
+dev = ["pytest"]
+ui = ["textual>=0.20.0"]
+cli = ["click>=8.0"]
+
+
+[project.scripts]
+arkyn = "arkyn.cli:main"

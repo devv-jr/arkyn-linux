@@ -136,32 +136,32 @@ step_install_deps() {
     echo ""
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Actualizando repositorios de paquetes${C_RESET}"
-    if pkg update -y > /tmp/arkyn_pkg.log 2>&1; then
+    if pkg update -y > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_pkg.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
     else
         echo -e " ${C_YELLOW}${SYM_WARN}${C_RESET}"
     fi
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando Python 3${C_RESET}"
-    if pkg install python -y > /tmp/arkyn_python.log 2>&1; then
+    if pkg install python -y > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_python.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
     else
         echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
-        log_error "Instalación de Python falló. Revisa /tmp/arkyn_python.log"
+        log_error "Instalación de Python falló. Revisa ${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_python.log"
         exit 1
     fi
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando Git${C_RESET}"
-    if pkg install git -y > /tmp/arkyn_git.log 2>&1; then
+    if pkg install git -y > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_git.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
     else
         echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
-        log_error "Instalación de Git falló. Revisa /tmp/arkyn_git.log"
+        log_error "Instalación de Git falló. Revisa ${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_git.log"
         exit 1
     fi
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Actualizando pip${C_RESET}"
-    if python -m pip install --upgrade pip > /tmp/arkyn_pip.log 2>&1; then
+    if python -m pip install --upgrade pip > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_pip.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
     else
         echo -e " ${C_YELLOW}${SYM_WARN}${C_RESET} (no crítico)"
@@ -189,12 +189,12 @@ step_clone_repo() {
     cd "$TMP_DIR"
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Descargando repositorio${C_RESET}"
-    if git clone "$ARKYN_REPO_URL" arkyn-src > /tmp/arkyn_clone.log 2>&1; then
+    if git clone "$ARKYN_REPO_URL" arkyn-src > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_clone.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
         log_success "Repositorio clonado"
     else
         echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
-        log_error "Clonación falló. Revisa /tmp/arkyn_clone.log"
+        log_error "Clonación falló. Revisa ${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_clone.log"
         exit 1
     fi
     
@@ -206,13 +206,13 @@ step_install_arkyn() {
     echo ""
     
     echo -ne "${C_CYAN}  ${SYM_ARROW} Instalando componentes CLI y TUI${C_RESET}"
-    if pip install -e .[cli,ui] > /tmp/arkyn_install.log 2>&1; then
+    if pip install -e .[cli,ui] > "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_install.log" 2>&1; then
         echo -e " ${C_GREEN}${SYM_OK}${C_RESET}"
         log_success "ARKYN instalado en modo editable"
     else
         echo -e " ${C_RED}${SYM_FAIL}${C_RESET}"
-        log_error "Instalación falló. Revisa /tmp/arkyn_install.log para más detalles"
-        cat /tmp/arkyn_install.log
+        log_error "Instalación falló. Revisa ${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_install.log para más detalles"
+        cat "${PREFIX:-/data/data/com.termux/files/usr}/tmp/arkyn_install.log"
         exit 1
     fi
 }

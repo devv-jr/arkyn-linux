@@ -19,5 +19,8 @@ ui = ["textual>=0.20.0"]
 cli = ["click>=8.0"]
 
 
+[tool.setuptools.packages.find]
+where = ["src/v0"]
+
 [project.scripts]
 arkyn = "arkyn.cli:main"

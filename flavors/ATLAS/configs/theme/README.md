@@ -1,10 +1,9 @@
 # Theme assets
 
-Put ATLAS theme assets and visual settings here.
+This folder contains the ATLAS visual identity.
 
-Suggested contents:
-- color palette
-- icon choices
-- SDDM visuals
-- wallpaper set
-- Plasma theme metadata
+Files:
+- `ATLAS.colors` for the Plasma color scheme
+- `metadata.desktop` for scheme metadata
+
+The installer copies these into `/usr/share/color-schemes/`.

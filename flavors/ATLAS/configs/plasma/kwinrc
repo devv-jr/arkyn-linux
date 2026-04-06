@@ -1,0 +1,11 @@
+[Compositing]
+Enabled=true
+OpenGLIsUnsafe=false
+
+[Windows]
+BorderlessMaximizedWindows=true
+FocusPolicy=ClickToFocus
+RollOverDesktops=true
+
+[TabBox]
+LayoutName=thumbnails

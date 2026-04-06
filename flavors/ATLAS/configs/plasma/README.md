@@ -1,10 +1,10 @@
 # Plasma defaults
 
-Put ATLAS Plasma defaults and session tweaks here.
+This folder contains the system-wide Plasma defaults used by ATLAS.
 
-Suggested contents:
-- panel layout
-- launcher preferences
-- window behavior
-- shortcuts
-- wallpaper and workspace defaults
+Files:
+- `kdeglobals` for basic Plasma appearance and behavior
+- `kwinrc` for window manager defaults
+- `kscreenlockerrc` for lock screen behavior
+
+These files are installed into `/etc/skel/.config/` so new users inherit the ATLAS defaults.

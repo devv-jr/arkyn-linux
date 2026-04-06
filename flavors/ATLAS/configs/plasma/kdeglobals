@@ -1,0 +1,14 @@
+[General]
+ColorScheme=ATLAS
+Name=ATLAS
+TerminalApplication=konsole
+
+[Icons]
+Theme=breeze
+
+[KDE]
+SingleClick=false
+
+[KFileDialog Settings]
+Places Icons Auto Resize=true
+Show Speedbar=true

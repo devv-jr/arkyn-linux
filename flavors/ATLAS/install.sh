@@ -32,16 +32,41 @@ install_packages() {
     xdg-user-dirs
 }
 
+install_plasma_defaults() {
+  log "Installing Plasma defaults"
+  install -d /etc/skel/.config
+  install -Dm644 "${SCRIPT_DIR}/configs/plasma/kdeglobals" /etc/skel/.config/kdeglobals
+  install -Dm644 "${SCRIPT_DIR}/configs/plasma/kwinrc" /etc/skel/.config/kwinrc
+  install -Dm644 "${SCRIPT_DIR}/configs/plasma/kscreenlockerrc" /etc/skel/.config/kscreenlockerrc
+}
+
+install_sddm_config() {
+  log "Installing SDDM config"
+  install -d /etc/sddm.conf.d
+  install -Dm644 "${SCRIPT_DIR}/configs/sddm/sddm.conf" /etc/sddm.conf.d/90-atlas.conf
+}
+
+install_theme_assets() {
+  log "Installing ATLAS color scheme"
+  install -d /usr/share/color-schemes
+  install -Dm644 "${SCRIPT_DIR}/configs/theme/ATLAS.colors" /usr/share/color-schemes/ATLAS.colors
+  install -Dm644 "${SCRIPT_DIR}/configs/theme/metadata.desktop" /usr/share/color-schemes/ATLAS.desktop
+}
+
 configure_layout() {
-  log "ATLAS configuration skeleton"
+  log "ATLAS configuration layout"
   log "Plasma config: ${SCRIPT_DIR}/configs/plasma"
   log "SDDM config: ${SCRIPT_DIR}/configs/sddm"
   log "Theme assets: ${SCRIPT_DIR}/configs/theme"
+  install_plasma_defaults
+  install_sddm_config
+  install_theme_assets
 }
 
 enable_display_manager() {
   log "Enabling SDDM"
   systemctl enable sddm
+  systemctl set-default graphical.target
 }
 
 main() {

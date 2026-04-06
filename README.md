@@ -42,6 +42,19 @@ Run `scripts/install_termux.sh` on device (requires git + python in Termux)
 - Create a package under `src/arkyn/plugins/<name>` implementing a `register(cli)` function or expose an entry point `arkyn.plugins`.
 
 
+## Flavors
+
+Custom distro variants live under `flavors/` in this repository.
+
+Current flavors:
+- `NOVA`
+- `ORION`
+- `SENTINEL`
+- `ATLAS`
+
+Each flavor gets its own directory with a short README so the shared base stays in one repo while flavor-specific setup stays isolated.
+
+
 ```python
 # plugin example interface
 def register(cli):

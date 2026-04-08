@@ -28,4 +28,10 @@ Current files:
 - `configs/theme/ATLAS.colors`
 - `configs/theme/metadata.desktop`
 
+The installer downloads those files from the GitHub raw URL for this repo by default.
+You can override the source with:
+- `ATLAS_REPO`
+- `ATLAS_REF`
+- `ATLAS_CONFIG_BASE_URL`
+
 ATLAS is meant to feel like a comfortable classic desktop without copying Windows or depending on it.

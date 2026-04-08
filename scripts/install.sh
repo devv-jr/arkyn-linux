@@ -16,7 +16,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 ARKYN_ASSETS_DIR="${REPO_ROOT}/assets/arkyn"
 ARKYN_WALLPAPER_DIR="/usr/share/backgrounds/arkyn"
-ARKYN_WALLPAPER_DEFAULT="${ARKYN_WALLPAPER_DEFAULT:-arkyn-god.png}"
+ARKYN_WALLPAPER_DARK="${ARKYN_WALLPAPER_DARK:-default-dark.jpg}"
+ARKYN_WALLPAPER_LIGHT="${ARKYN_WALLPAPER_LIGHT:-default-light.jpg}"
+ARKYN_THEME_VARIANT="${ARKYN_THEME_VARIANT:-dark}"
 
 usage() {
   cat <<EOF
@@ -222,6 +224,31 @@ install_wallpapers() {
   fi
 }
 
+resolve_default_wallpaper() {
+  local wallpaper_name="${ARKYN_WALLPAPER_DARK}"
+
+  if [[ "${ARKYN_THEME_VARIANT}" == "light" ]]; then
+    wallpaper_name="${ARKYN_WALLPAPER_LIGHT}"
+  fi
+
+  if [[ -f "${ARKYN_WALLPAPER_DIR}/${wallpaper_name}" ]]; then
+    printf '%s\n' "${ARKYN_WALLPAPER_DIR}/${wallpaper_name}"
+    return
+  fi
+
+  if [[ -f "${ARKYN_WALLPAPER_DIR}/${ARKYN_WALLPAPER_DARK}" ]]; then
+    printf '%s\n' "${ARKYN_WALLPAPER_DIR}/${ARKYN_WALLPAPER_DARK}"
+    return
+  fi
+
+  if [[ -f "${ARKYN_WALLPAPER_DIR}/${ARKYN_WALLPAPER_LIGHT}" ]]; then
+    printf '%s\n' "${ARKYN_WALLPAPER_DIR}/${ARKYN_WALLPAPER_LIGHT}"
+    return
+  fi
+
+  printf '\n'
+}
+
 configure_system() {
   log "Enabling services..."
   enable_service NetworkManager
@@ -240,11 +267,11 @@ configure_system() {
   local user_home
   local wallpaper_path
   user_home="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
-  wallpaper_path="${ARKYN_WALLPAPER_DIR}/${ARKYN_WALLPAPER_DEFAULT}"
+  wallpaper_path="$(resolve_default_wallpaper)"
 
   mkdir -p "$user_home/.config"
 
-  if [[ -f "$wallpaper_path" ]]; then
+  if [[ -n "$wallpaper_path" && -f "$wallpaper_path" ]]; then
     cat > "$user_home/.xinitrc" <<EOF
 if command -v feh >/dev/null 2>&1; then
   feh --bg-fill "$wallpaper_path"
@@ -259,7 +286,7 @@ fi
 exec i3
 EOF
   else
-    warn "Default wallpaper not found: ${wallpaper_path}"
+    warn "Default wallpaper not found for variant ${ARKYN_THEME_VARIANT}"
 
     cat > "$user_home/.xinitrc" <<'EOF'
 exec i3
